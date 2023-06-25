@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "639281709086",
+    "project_id": "face-recognizer-humans",
+    "storage_bucket": "face-recognizer-humans.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639281709086:android:56c1d5c293c0a7900b2e0f",
+        "android_client_info": {
+          "package_name": "com.irhammuch.android.facerecognition"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "639281709086-0j2vekompso5r9tfjtn19dm8ed04q5nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAz1EF5bDEXJJruv3B4Jq30tewbP1pyEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "639281709086-0j2vekompso5r9tfjtn19dm8ed04q5nb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
