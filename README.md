@@ -1,7 +1,7 @@
 ## Android Face Recognition
 
 Real Time Face Recognition App using Google MLKit, Tensorflow Lite, & MobileFaceNet.
-
+storage of recognized images on cloud to reuse next time.
 ### Key features
 
 - Detect and Recognize faces in **Real Time**.
