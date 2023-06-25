@@ -5,7 +5,7 @@ storage of recognized images on cloud to reuse next time.
 
 original project at 
 https://github.com/irhammuch/android-face-recognition.git
-My project has additional features to store the data to a cloud service.
+My project has additional features to store the data to a cloud service. Now any face once recognized will always be recognized again.
 
 ### Key features
 
