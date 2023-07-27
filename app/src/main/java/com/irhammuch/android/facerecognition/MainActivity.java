@@ -3,6 +3,7 @@ package com.irhammuch.android.facerecognition;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -16,7 +17,10 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.YuvImage;
 import android.media.Image;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
+import android.speech.tts.TextToSpeech;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Pair;
@@ -79,10 +83,13 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import android.speech.tts.TextToSpeech;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -113,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int INPUT_SIZE = 112;
     private static final int OUTPUT_SIZE=192;
 
+    private TextToSpeech textToSpeech;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,103 +145,111 @@ public class MainActivity extends AppCompatActivity {
         ImageButton switchCamBtn = findViewById(R.id.switch_camera);
         switchCamBtn.setOnClickListener((view -> switchCamera()));
 
+
+        textToSpeech = new TextToSpeech(this, null);
+        textToSpeech.setLanguage(Locale.US);
+
+
         loadModel();
+
+
+
     }
-private void synccloud2(){
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans.appspot.com");
-    StorageReference fileRef = storageRef.child("file.json");
+    private void synccloud2(){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans.appspot.com");
+        StorageReference fileRef = storageRef.child("file.json");
 
-// Create a temporary file to store the downloaded JSON file
-    File localFile;
-    try {
-        localFile = File.createTempFile("file", "json");
-    } catch (IOException e) {
-        Log.i(TAG, "synccloud2:addFace "+e);
-        return; // Error creating temporary file
-    }
+    // Create a temporary file to store the downloaded JSON file
+        File localFile;
+        try {
+            localFile = File.createTempFile("file", "json");
+        } catch (IOException e) {
+            Log.i(TAG, "synccloud2:addFace "+e);
+            return; // Error creating temporary file
+        }
 
-    fileRef.getFile(localFile)
-            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // File downloaded successfully
-
-
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(localFile));
-                        String line;
-                        StringBuilder stringBuilder = new StringBuilder();
-
-                        while ((line = reader.readLine()) != null) {
-                            stringBuilder.append(line);
-                        }
-
-                        reader.close();
-
-                        // Parse the downloaded JSON file
-                        JSONArray jsonArray = new JSONArray(stringBuilder.toString());
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            jsonlist.add(jsonObject);
-                            Log.i(TAG, "onSuccess: addFace-"+ jsonObject);
+        fileRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // File downloaded successfully
 
 
-                            String k = jsonObject.keys().next();
-                            Log.i(TAG, "onSuccess: addFace 4 key"+k+" val"+ jsonObject.getString(k));
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(localFile));
+                            String line;
+                            StringBuilder stringBuilder = new StringBuilder();
 
-                            SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition(
-                                    "0", "", -1f);
-
-
-// Remove the brackets [ and ] from the input string
-                            String cleanedString = jsonObject.getString(k).substring(1,jsonObject.getString(k).length() - 1);
-
-// Split the string by comma to get individual float values
-                            String[] floatStrings = cleanedString.split(",");
-
-// Create an array to store the float values
-                            float[] floatArray = new float[floatStrings.length];
-
-// Convert each string value to a float and store it in the float array
-                            for (int j = 0; j < floatStrings.length; j++) {
-                                floatArray[j] = Float.parseFloat(floatStrings[j]);
-                                //Log.i(TAG, "onSuccess: addFaces float"+floatArray[j]);
+                            while ((line = reader.readLine()) != null) {
+                                stringBuilder.append(line);
                             }
-                            Log.i(TAG, "onSuccess: addFaces float"+floatArray);
+
+                            reader.close();
+
+                            // Parse the downloaded JSON file
+                            JSONArray jsonArray = new JSONArray(stringBuilder.toString());
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                jsonlist.add(jsonObject);
+                                Log.i(TAG, "onSuccess: addFace-"+ jsonObject);
 
 
-                            float[][] embeddings = {floatArray};
+                                String k = jsonObject.keys().next();
+                                Log.i(TAG, "onSuccess: addFace 4 key"+k+" val"+ jsonObject.getString(k));
+
+                                SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition(
+                                        "0", "", -1f);
 
 
-                            result.setExtra(embeddings);
+    // Remove the brackets [ and ] from the input string
+                                String cleanedString = jsonObject.getString(k).substring(1,jsonObject.getString(k).length() - 1);
+
+    // Split the string by comma to get individual float values
+                                String[] floatStrings = cleanedString.split(",");
+
+    // Create an array to store the float values
+                                float[] floatArray = new float[floatStrings.length];
+
+    // Convert each string value to a float and store it in the float array
+                                for (int j = 0; j < floatStrings.length; j++) {
+                                    floatArray[j] = Float.parseFloat(floatStrings[j]);
+                                    //Log.i(TAG, "onSuccess: addFaces float"+floatArray[j]);
+                                }
+                                Log.i(TAG, "onSuccess: addFaces float"+floatArray);
 
 
-                            registered.put( k,result);
+                                float[][] embeddings = {floatArray};
 
-                            Log.i(TAG, "onSuccess: addFaces==>>> \n " + embeddings[0] + "\n \n" + jsonlist);
+
+                                result.setExtra(embeddings);
+
+
+                                registered.put( k,result);
+
+                                Log.i(TAG, "onSuccess: addFaces==>>> \n " + embeddings[0] + "\n \n" + jsonlist);
+                            }
+
+                            // Use the jsonList as needed
+                            // ...
+
+                        } catch (IOException | JSONException e) {
+                            Log.i(TAG, "synccloud2:addFace "+e);
+                            // Error parsing JSON or reading the file
                         }
 
-                        // Use the jsonList as needed
-                        // ...
-
-                    } catch (IOException | JSONException e) {
-                        Log.i(TAG, "synccloud2:addFace "+e);
-                        // Error parsing JSON or reading the file
+                        // Delete the temporary file
+                        localFile.delete();
                     }
-
-                    // Delete the temporary file
-                    localFile.delete();
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Error downloading the file
-                    e.printStackTrace();
-                }
-            });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Error downloading the file
+                        e.printStackTrace();
+                    }
+                });
 }
     @Override
     protected void onResume() {
@@ -379,7 +395,7 @@ private void synccloud2(){
                 .addOnFailureListener(e -> Log.e(TAG, "Barcode process failure", e))
                 .addOnCompleteListener(task -> image.close());
     }
-
+    public static  String person_name;
     private void onSuccessListener(List<Face> faces, InputImage inputImage) {
         Rect boundingBox = null;
         String name = null;
@@ -400,7 +416,12 @@ private void synccloud2(){
                     inputImage.getRotationDegrees(),
                     boundingBox);
 
+            // ye bitmap bhi save ker dena chaye-------------
+            //phir server side pey issey revert kerlo
+            // ya extra code likhdo
+
             if(start) name = recognizeImage(bitmap);
+
             if(name != null) detectionTextView.setText(name);
         }
         else {
@@ -409,11 +430,14 @@ private void synccloud2(){
 
         graphicOverlay.draw(boundingBox, scaleX, scaleY, name);
     }
-
-    /** Recognize Processor */
+    private void speakText(String text){
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+    /** Recognize Processor and check face*/
     private void addFace() {
         start=false;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         builder.setTitle("Enter Name");
 
         // Set up the input
@@ -423,65 +447,173 @@ private void synccloud2(){
         input.setMaxWidth(200);
         builder.setView(input);
 
+
         // Set up the buttons
-        builder.setPositiveButton("ADD", (dialog, which) -> {
-            //Toast.makeText(context, input.getText().toString(), Toast.LENGTH_SHORT).show();
 
-            //Create and Initialize new object with Face embeddings and Name.
-            SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition(
-                    "0", "", -1f);
-            result.setExtra(embeddings);
-           /* int ctt=0;
-            for (float emb:embeddings[ctt]
-                 ) {
-                Log.i(TAG, "addFace: embd " +emb );
-            }
-            ctt+=1;*/
-            Log.i(TAG, "addFace: 2 embeddings"+embeddings[0][0]);
-            registered.put( input.getText().toString(),result);
-            start = true;
-
-
-
-
-            jsonObject = new JSONObject();
-            try {
-
-                JSONArray jsonArray = new JSONArray(embeddings[0]);
-                jsonObject.put(input.getText().toString(), jsonArray);
-
-                Log.i(TAG, "addFace: json " +jsonObject);
-
-                jsonlist.add(jsonObject);
-                Log.i(TAG, "addFace: list> "+ jsonlist);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-// Convert the JSON to bytes
-            byte[] data = jsonlist.toString().getBytes();
-
-// Upload the data to Firebase Storage
-            UploadTask uploadTask = storageRef.putBytes(data);
-            uploadTask.addOnSuccessListener(taskSnapshot -> {
-                // Handle successful upload
-                // You can retrieve the download URL or perform any additional actions here
-                Log.i(TAG, "addFace: success");
-            }).addOnFailureListener(e -> {
-                // Handle upload failure
-                Log.i(TAG, "addFace: failure");
-            });
-
-
-
-
-        });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             start = true;
             dialog.cancel();
         });
 
-        builder.show();
+        if (graphicOverlay.name == null || graphicOverlay.name == "unknown") {
+            builder.setPositiveButton("ADD", (dialog, which) -> {
+                //Toast.makeText(context, input.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                //Create and Initialize new object with Face embeddings and Name.
+                SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition(
+                        "0", "", -1f);
+                result.setExtra(embeddings);
+
+                Log.i(TAG, "addFace: 2 embeddings"+embeddings[0][0]);
+                registered.put( input.getText().toString(),result);
+                start = true;
+
+
+                jsonObject = new JSONObject();
+                try {
+
+                    JSONArray jsonArray = new JSONArray(embeddings[0]);
+                    jsonObject.put(input.getText().toString(), jsonArray);
+
+                    Log.i(TAG, "addFace: json " +jsonObject);
+
+                    jsonlist.add(jsonObject);
+                    Log.i(TAG, "addFace: list> "+ jsonlist);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                // Convert the JSON to bytes
+                byte[] data = jsonlist.toString().getBytes();
+
+                // Upload the data to Firebase Storage
+                UploadTask uploadTask = storageRef.putBytes(data);
+                uploadTask.addOnSuccessListener(taskSnapshot -> {
+                    // Handle successful upload
+                    // You can retrieve the download URL or perform any additional actions here
+                    Log.i(TAG, "addFace: success");
+                }).addOnFailureListener(e -> {
+                    // Handle upload failure
+                    Log.i(TAG, "addFace: failure");
+                });
+
+
+            });
+            speakText("hi , what is your name");
+            builder.show();
+        }
+        else{
+
+            builder.setPositiveButton("Meet", (dialog, which) -> {
+                start = true;
+                person_name= input.getText().toString();
+                meeting_logic(graphicOverlay.name);
+            });
+            speakText("hi " + graphicOverlay.name + " who do you want to meet");
+            builder.show();
+
+        }
+
     }
+    private ArrayList<JSONObject>  person_list;
+    private  void meeting_logic(String customer){
+
+        FirebaseStorage storage;
+        StorageReference storageRef;
+
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans.appspot.com");
+        Log.i(TAG, "meeting_logic: enter");
+
+        String fileName = "user_availablity.json";
+        StorageReference fileRef = storageRef.child(fileName);
+
+        fileRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
+            String jsonString = new String(bytes);
+
+            try {
+                JSONObject jsonObject = new JSONObject(jsonString);
+
+                // Now you have the JSONObject, you can work with it as needed.
+                Log.i(TAG, "meeting_logic: "+jsonObject.optString(person_name));
+                if (jsonObject.optString(person_name).equalsIgnoreCase("unavailable")){
+                    //record_message(customer);
+                    Intent intent = new Intent(MainActivity.this,Recording.class);
+                    intent.putExtra("person_name",person_name);
+                    startActivity(intent);
+
+                }
+
+
+            } catch (JSONException e) {
+                Log.e("meeting", "Error parsing JSON: " + e.getMessage());
+            }
+        }).addOnFailureListener(exception -> {
+            Log.e("meeting", "Error downloading file: " + exception.getMessage());
+        });
+
+
+    }
+    private String Customer="";
+    private void record_message(String customer){
+        // intent to open recorder
+        Customer=customer;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Record Message");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT );
+        input.setMaxWidth(200);
+        builder.setView(input);
+
+        Log.i(TAG, "record_message: start");
+        // Set up the buttons
+
+        builder.setNegativeButton("Stop", (dialog, which) -> {
+            save_recording();
+            dialog.cancel();
+        });
+        builder.setPositiveButton("Start", (dialog, which) -> {
+            start_recording();
+
+        });
+        builder.show();
+
+    }
+    private MediaRecorder mediaRecorder;
+    private String audioFilePath;
+    private void start_recording(){
+        //customer null aa raha
+        String fileName = "message to " + person_name+" _ "+ System.currentTimeMillis() + ".3gp"; // or .mp3, .m4a, etc.
+        audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName;
+        Log.i(TAG, "start_recording: audio"+ fileName);
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP); // or .MP4, .AAC, etc.
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB); // or .AAC, .OGG, etc.
+        mediaRecorder.setOutputFile(audioFilePath);
+        Log.i(TAG, "start_recording: audio 2");
+
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void save_recording(){
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+    }
+
+
 
     public String recognizeImage(final Bitmap bitmap) {
         // set image to preview
@@ -757,4 +889,6 @@ private void synccloud2(){
         long declaredLength = fileDescriptor.getDeclaredLength();
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
+
+
 }

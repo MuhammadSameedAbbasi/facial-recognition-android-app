@@ -20,7 +20,7 @@ public class GraphicOverlay extends View {
     private float scaleX = 1.0f;
     private float scaleY = 1.0f;
     private final Paint textPaint = new Paint();
-    private String name = null;
+    public String name = null;
     private RectF rectF = null;
     private final Paint labelPaint = new Paint();
 
