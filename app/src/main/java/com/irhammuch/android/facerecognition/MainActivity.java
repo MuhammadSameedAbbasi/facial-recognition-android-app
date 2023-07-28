@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
         loadModel();
 
 
-
     }
     private void synccloud2(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -179,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                         try {
+
+                            speakText("Welcome to Robo Receptionist");
+
                             BufferedReader reader = new BufferedReader(new FileReader(localFile));
                             String line;
                             StringBuilder stringBuilder = new StringBuilder();
@@ -517,6 +519,7 @@ public class MainActivity extends AppCompatActivity {
                     // Handle successful upload
                     // You can retrieve the download URL or perform any additional actions here
                     Log.i(TAG, "addFace: success");
+                    addFace();
                 }).addOnFailureListener(e -> {
                     // Handle upload failure
                     Log.i(TAG, "addFace: failure");
@@ -526,6 +529,7 @@ public class MainActivity extends AppCompatActivity {
             });
             speakText("hi , what is your name");
             builder.show();
+
         }
         else{
 
@@ -583,64 +587,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-    }
-    private String Customer="";
-    private void record_message(String customer){
-        // intent to open recorder
-        Customer=customer;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Record Message");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-
-        input.setInputType(InputType.TYPE_CLASS_TEXT );
-        input.setMaxWidth(200);
-        builder.setView(input);
-
-        Log.i(TAG, "record_message: start");
-        // Set up the buttons
-
-        builder.setNegativeButton("Stop", (dialog, which) -> {
-            save_recording();
-            dialog.cancel();
-        });
-        builder.setPositiveButton("Start", (dialog, which) -> {
-            start_recording();
-
-        });
-        builder.show();
-
-    }
-    private MediaRecorder mediaRecorder;
-    private String audioFilePath;
-    private void start_recording(){
-
-        String fileName = "message to " + person_name+" _ "+ System.currentTimeMillis() + ".3gp"; // or .mp3, .m4a, etc.
-        audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName;
-        Log.i(TAG, "start_recording: audio"+ fileName);
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP); // or .MP4, .AAC, etc.
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB); // or .AAC, .OGG, etc.
-        mediaRecorder.setOutputFile(audioFilePath);
-        Log.i(TAG, "start_recording: audio 2");
-
-        try {
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void save_recording(){
-        if (mediaRecorder != null) {
-            mediaRecorder.stop();
-            mediaRecorder.release();
-            mediaRecorder = null;
-        }
     }
 
 
@@ -906,6 +852,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     private void loadModel() {
         try {
+
             //model name
             String modelFile = "mobile_face_net.tflite";
             tfLite = new Interpreter(loadModelFile(MainActivity.this, modelFile));
