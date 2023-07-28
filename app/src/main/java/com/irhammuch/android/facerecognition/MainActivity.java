@@ -561,7 +561,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private ArrayList<JSONObject>  person_list;
     private  void meeting_logic(String customer){
 
 
@@ -586,9 +585,17 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonObject.optString(person_name).equalsIgnoreCase("unavailable")){
                     //record_message(customer);
                     speakText(person_name+" is not available . Please leave a message.");
-                    Intent intent = new Intent(MainActivity.this,Recording.class);
-                    intent.putExtra("person_name",person_name);
-                    startActivity(intent);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(MainActivity.this,Recording.class);
+                            intent.putExtra("person_name",person_name);
+                            startActivity(intent);
+                        }
+                    }, 3000); // Delay in milliseconds (2 seconds)
+
 
                 }else{
                     // if person is available action
