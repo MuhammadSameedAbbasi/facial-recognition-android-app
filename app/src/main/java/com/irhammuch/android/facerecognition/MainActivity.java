@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                 person_name= input.getText().toString();
                 meeting_logic(graphicOverlay.name);
             });
-            speakText("hi " + graphicOverlay.name + " who do you want to meet");
+            speakText("hi " + graphicOverlay.name + ",  who do you want to meet");
             builder.show();
 
         }
@@ -544,6 +544,9 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("person_name",person_name);
                     startActivity(intent);
 
+                }else{
+                    // if person is available action
+                    speakText("You can meet "+ person_name +" Right now");
                 }
 
 
