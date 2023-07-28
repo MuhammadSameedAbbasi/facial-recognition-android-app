@@ -302,6 +302,30 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
         mRecorder.release();
         mRecorder = null;
         statusTV.setText("Recording Stopped");
+
+
+        File privateExternalDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+
+        if (privateExternalDir != null && privateExternalDir.exists()) {
+            // Get a list of all files in the directory
+            File[] files = privateExternalDir.listFiles();
+
+            // Check if any files are present
+            if (files != null && files.length > 0) {
+                // Iterate through the files and print their names
+
+                for (File file : files) {
+                    if (!dataList.contains(file.getName())){
+                        dataList.add(file.getName());
+                    }
+                    Log.d("File List", file.getName());
+                }
+            } else {
+                Log.d("File List", "No files found in the directory.");
+            }
+        } else {
+            Log.d("File List", "Directory not found or doesn't exist.");
+        }
     }
 
     public void pausePlaying() {
@@ -318,7 +342,13 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        file_to_play = audiohash.get( dataList.get(i));
+
+        String fileName =  dataList.get(i);
+        File privateExternalDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+
+        // Create the output file in the app's private external storage directory
+        File outputFile = new File(privateExternalDir, fileName);
+        file_to_play = outputFile.getAbsolutePath();
         Log.i("chkr", "onItemSelected:__ "+ file_to_play);
     }
 
