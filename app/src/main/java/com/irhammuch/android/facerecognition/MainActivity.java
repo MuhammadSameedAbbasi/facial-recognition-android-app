@@ -70,6 +70,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         jsonlist = new ArrayList<JSONObject>();
         db = FirebaseStorage.getInstance();
         storageRef = db.getReference().child("file.json");
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             localFile = File.createTempFile("file", "json");
         } catch (IOException e) {
-            Log.i(TAG, "synccloud2:addFace "+e);
+            Log.i(TAG, "sync cloud2: addFace "+e);
             return; // Error creating temporary file
         }
 
@@ -396,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> image.close());
     }
     public static  String person_name;
+    private Bitmap bitmaptemp;
     private void onSuccessListener(List<Face> faces, InputImage inputImage) {
         Rect boundingBox = null;
         String name = null;
@@ -410,12 +413,14 @@ public class MainActivity extends AppCompatActivity {
             // get bounding box of face;
             boundingBox = face.getBoundingBox();
 
+
             // convert img to bitmap & crop img
             Bitmap bitmap = mediaImgToBmp(
                     inputImage.getMediaImage(),
                     inputImage.getRotationDegrees(),
                     boundingBox);
 
+            bitmaptemp = bitmap;
             // ye bitmap bhi save ker dena chaye-------------
             //phir server side pey issey revert kerlo
             // ya extra code likhdo
@@ -433,9 +438,28 @@ public class MainActivity extends AppCompatActivity {
     private void speakText(String text){
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
     }
+
+    private void saveBitmapToGallery(Bitmap bitmap, String imgname) {
+        File galleryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String fileName = imgname + "_" + System.currentTimeMillis() + ".jpg";
+        File file = new File(galleryPath, fileName);
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            Toast.makeText(this, "Image saved to gallery.", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save image to gallery.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /** Recognize Processor and check face*/
     private void addFace() {
         start=false;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Enter Name");
@@ -468,12 +492,13 @@ public class MainActivity extends AppCompatActivity {
                 registered.put( input.getText().toString(),result);
                 start = true;
 
-
+                saveBitmapToGallery(bitmaptemp, input.getText().toString());
                 jsonObject = new JSONObject();
                 try {
 
                     JSONArray jsonArray = new JSONArray(embeddings[0]);
                     jsonObject.put(input.getText().toString(), jsonArray);
+
 
                     Log.i(TAG, "addFace: json " +jsonObject);
 
@@ -591,7 +616,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
     private void start_recording(){
-        //customer null aa raha
+
         String fileName = "message to " + person_name+" _ "+ System.currentTimeMillis() + ".3gp"; // or .mp3, .m4a, etc.
         audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName;
         Log.i(TAG, "start_recording: audio"+ fileName);
@@ -617,7 +642,6 @@ public class MainActivity extends AppCompatActivity {
             mediaRecorder = null;
         }
     }
-
 
 
     public String recognizeImage(final Bitmap bitmap) {
@@ -670,6 +694,10 @@ public class MainActivity extends AppCompatActivity {
 
                 final String name = nearest.first;
                 distance = nearest.second;
+
+
+
+                // change this value to control and optimize face recognition
                 if(distance<1.000f) //If distance between Closest found face is more than 1.000 ,then output UNKNOWN face.
                     return name;
                 else
