@@ -1,7 +1,8 @@
-## Android Face Recognition
+## Android Reception Automation with Face Recognition
 
-Real Time Face Recognition App using Google MLKit, Tensorflow Lite, & MobileFaceNet.
-storage of recognized images on cloud to reuse next time.
+Reception automation of meeting assistance tasks. Checking client's availability and stores a audio message if person not available. 
+Real Time Face Recognition using Google MLKit, Tensorflow Lite, & MobileFaceNet taken from https://github.com/irhammuch/android-face-recognition.git
+Storage of recognized people on cloud to reidentify next time.
 
 original project at 
 https://github.com/irhammuch/android-face-recognition.git
@@ -12,6 +13,8 @@ My project has additional features to store the data to a cloud service. Now any
 - Detect and Recognize faces in **Real Time**.
 - Works **offline** without using API connection.
 - **Fast** and **Accurate**.
+- cloud backup of identified faces.
+- assist in storing voice messages.
 
 ### Demo
 
