@@ -38,7 +38,7 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
     private HashMap<String,String> audiohash;
 
     // Initializing all variables..
-    private TextView startTV, stopTV, playTV, stopplayTV, statusTV;
+    private TextView startTV, stopTV, playTV, stopplayTV, statusTV, delete;
 
     // creating a variable for media recorder object class.
     private MediaRecorder mRecorder;
@@ -104,6 +104,7 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
 //            }
 //
 //        });
+
         spin.setOnItemSelectedListener(this);
 
         // initialize all variables with their layout items.
@@ -116,7 +117,7 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
         playTV.setBackgroundColor(getResources().getColor(R.color.gray));
         stopplayTV.setBackgroundColor(getResources().getColor(R.color.gray));
 
-
+        delete = findViewById(R.id.deletebutton);
 
         File privateExternalDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
 
@@ -141,7 +142,38 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
             Log.d("File List", "Directory not found or doesn't exist.");
         }
 
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Delete recording method
+                Log.i("chkr", "onClick: delete" +file_to_play);
+                if (privateExternalDir != null && privateExternalDir.exists()) {
+                    // Specify the file name you want to delete
 
+                    // Create a File object representing the file to be deleted
+                    File fileToDelete = new File(file_to_play);
+
+                    // Check if the file exists before attempting to delete
+                    if (fileToDelete.exists()) {
+                        // Attempt to delete the file
+                        boolean isDeleted = fileToDelete.delete();
+
+                        if (isDeleted) {
+                            //    file_to_play ko null kerdo ya smt
+                            dataList.remove(fileToDelete.getName());
+                            Log.d("File Delete", "==== File deleted successfully."+ fileToDelete.getName());
+                            //toast
+                        } else {
+                            Log.d("File Delete", "Failed to delete the file.");
+                        }
+                    } else {
+                        Log.d("File Delete", "File not found at the specified location.");
+                    }
+                } else {
+                    Log.d("File Delete", "Directory not found or doesn't exist.");
+                }
+            }
+        });
 
         startTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,39 +351,42 @@ public class Recording extends AppCompatActivity implements AdapterView.OnItemSe
         startTV.setBackgroundColor(getResources().getColor(R.color.purple_200));
         playTV.setBackgroundColor(getResources().getColor(R.color.purple_200));
         stopplayTV.setBackgroundColor(getResources().getColor(R.color.purple_200));
+        try {
+            // below method will stop
+            // the audio recording.
+            mRecorder.stop();
 
-        // below method will stop
-        // the audio recording.
-        mRecorder.stop();
-
-        // below method will release
-        // the media recorder class.
-        mRecorder.release();
-        mRecorder = null;
-        statusTV.setText("Recording Stopped");
+            // below method will release
+            // the media recorder class.
+            mRecorder.release();
+            mRecorder = null;
+            statusTV.setText("Recording Stopped");
 
 
-        File privateExternalDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            File privateExternalDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
 
-        if (privateExternalDir != null && privateExternalDir.exists()) {
-            // Get a list of all files in the directory
-            File[] files = privateExternalDir.listFiles();
+            if (privateExternalDir != null && privateExternalDir.exists()) {
+                // Get a list of all files in the directory
+                File[] files = privateExternalDir.listFiles();
 
-            // Check if any files are present
-            if (files != null && files.length > 0) {
-                // Iterate through the files and print their names
+                // Check if any files are present
+                if (files != null && files.length > 0) {
+                    // Iterate through the files and print their names
 
-                for (File file : files) {
-                    if (!dataList.contains(file.getName())){
-                        dataList.add(file.getName());
+                    for (File file : files) {
+                        if (!dataList.contains(file.getName())) {
+                            dataList.add(file.getName());
+                        }
+                        Log.d("File List", file.getName());
                     }
-                    Log.d("File List", file.getName());
+                } else {
+                    Log.d("File List", "No files found in the directory.");
                 }
             } else {
-                Log.d("File List", "No files found in the directory.");
+                Log.d("File List", "Directory not found or doesn't exist.");
             }
-        } else {
-            Log.d("File List", "Directory not found or doesn't exist.");
+        }catch(Exception e){
+            Log.i("error", "pauseRecording: "+e);
         }
     }
 
