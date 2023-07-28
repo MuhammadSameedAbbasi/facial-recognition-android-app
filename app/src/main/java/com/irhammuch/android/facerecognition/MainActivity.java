@@ -20,10 +20,12 @@ import android.media.Image;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,6 +45,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
     private GraphicOverlay graphicOverlay;
-    private ImageView previewImg;
+    private ImageView previewImg , gifimageview;
     private TextView detectionTextView;
 
     private ArrayList<JSONObject> jsonlist;
@@ -133,7 +136,10 @@ public class MainActivity extends AppCompatActivity {
         detectionTextView = findViewById(R.id.detection_text);
 
 
+        gifimageview= findViewById(R.id.gifImageView);
 
+        gifimageview.setVisibility(View.INVISIBLE);
+        Glide.with(this).asGif().load(R.drawable.talking).into(gifimageview);
 
         jsonlist = new ArrayList<JSONObject>();
         db = FirebaseStorage.getInstance();
@@ -438,7 +444,18 @@ public class MainActivity extends AppCompatActivity {
         graphicOverlay.draw(boundingBox, scaleX, scaleY, name);
     }
     private void speakText(String text){
+        gifimageview.setVisibility(View.VISIBLE);
+
+        // Hide the ImageView after 2 seconds
+        Handler handler = new Handler();
+
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                gifimageview.setVisibility(View.GONE);
+            }
+        }, 2500); // Delay in milliseconds (2 seconds)
     }
 
     private void saveBitmapToGallery(Bitmap bitmap, String imgname) {

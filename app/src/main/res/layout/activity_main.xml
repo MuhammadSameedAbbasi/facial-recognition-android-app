@@ -22,6 +22,13 @@
         app:layout_constraintTop_toTopOf="@id/previewView"
         app:layout_constraintBottom_toBottomOf="@id/previewView"/>
 
+    <ImageView
+        android:id="@+id/gifImageView"
+        android:layout_width="189dp"
+        android:layout_height="199dp"
+        android:src="@drawable/talking"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/previewView" />
     <TextView
         android:id="@+id/detection_text"
         android:layout_width="0dp"
