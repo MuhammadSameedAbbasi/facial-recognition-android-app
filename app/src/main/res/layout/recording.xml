@@ -33,15 +33,6 @@
     <!--Linear Layout for adding textviews
         in horizontal manner-->
 
-    <Spinner
-        android:id="@+id/audiolist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="189dp"
-        android:scrollbars="vertical"
-        android:spinnerMode="dropdown" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -110,4 +101,15 @@
 
     </LinearLayout>
 
+    <Spinner
+        android:id="@+id/audiospinner"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="171dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </RelativeLayout>

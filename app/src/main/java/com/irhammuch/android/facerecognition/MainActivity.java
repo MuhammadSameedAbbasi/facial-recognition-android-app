@@ -518,6 +518,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<JSONObject>  person_list;
     private  void meeting_logic(String customer){
 
+
         FirebaseStorage storage;
         StorageReference storageRef;
 
@@ -538,6 +539,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "meeting_logic: "+jsonObject.optString(person_name));
                 if (jsonObject.optString(person_name).equalsIgnoreCase("unavailable")){
                     //record_message(customer);
+                    speakText(person_name+" is not available . Please leave a message.");
                     Intent intent = new Intent(MainActivity.this,Recording.class);
                     intent.putExtra("person_name",person_name);
                     startActivity(intent);

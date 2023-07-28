@@ -24,16 +24,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class Recording extends AppCompatActivity {
+public class Recording extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private Spinner spinner;
     private List<String> dataList;
+    private HashMap<String,String> audiohash;
 
     // Initializing all variables..
     private TextView startTV, stopTV, playTV, stopplayTV, statusTV;
@@ -42,7 +44,6 @@ public class Recording extends AppCompatActivity {
     private MediaRecorder mRecorder;
 
     private String audioFilePath;
-    private String audioFilePathtemp;
 
     // creating a variable for mediaplayer class
     private MediaPlayer mPlayer;
@@ -58,25 +59,52 @@ public class Recording extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording);
+        audiohash = new HashMap<String,String>();
+        dataList= new ArrayList<String>();
+        dataList.add(" ");
+        Spinner spin = findViewById(R.id.audiospinner);
 
-        dataList = new ArrayList<>();
 
-        spinner =findViewById(R.id.audiolist);
-        spinner.setAdapter(new ArrayAdapter<>(Recording.this, R.layout.spinner_custom,dataList));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("chkr", "onItemSelected: 3"+ position    );
-                file_to_play = parent.getItemAtPosition(position).toString();
-                statusTV.setText(file_to_play);
-            }
+        // Create the instance of ArrayAdapter
+        // having the list of courses
+        ArrayAdapter ad = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_item, dataList);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+        // set simple layout resource file
+        // for each item of spinner
+        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(ad);
 
-            }
 
-        });
+        // Set the ArrayAdapter (ad) data on the
+        // Spinner which binds data to spinner
+
+//        dataList = new ArrayList<>();
+//
+//        spinner =findViewById(R.id.audiolist);
+//        spinner.setAdapter(new ArrayAdapter<>(Recording.this, R.layout.spinner_custom,dataList));
+//        spinner.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener() {
+//
+//            public void onItemClick(AdapterView<?> adapter, View view, int pos,
+//                                    long id) {
+//                // TODO Auto-generated method stub
+//                Log.i("chkr", "onItemClick: ");
+//            }
+//
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                file_to_play = spinner.getItemAtPosition(i).toString();
+//                Log.i("chkr", "onItem SELECTED: "+file_to_play);
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//
+//        });
+        spin.setOnItemSelectedListener(this);
 
         // initialize all variables with their layout items.
         statusTV = findViewById(R.id.idTVstatus);
@@ -152,7 +180,7 @@ public class Recording extends AppCompatActivity {
             // Create the output file in the app's private external storage directory
             File outputFile = new File(privateExternalDir, fileName);
             audioFilePath = outputFile.getAbsolutePath();
-
+            Log.i("chkr", "startRecording: "+ audioFilePath);
 
             // below method is used to initialize
             // the media recorder class
@@ -173,13 +201,14 @@ public class Recording extends AppCompatActivity {
             // below method is used to set the
             // output file location for our recorded audio
             mRecorder.setOutputFile(audioFilePath);
-            dataList.add(audioFilePath);
+            dataList.add(fileName);
+            audiohash.put(fileName,audioFilePath);
             try {
                 // below method will prepare
                 // our audio recorder class
                 mRecorder.prepare();
             } catch (IOException e) {
-                Log.e("TAG", "prepare() failed");
+                Log.e("chkr", "prepare() failed 2"+audioFilePath);
             }
             // start method will start
             // the audio recording.
@@ -239,8 +268,14 @@ public class Recording extends AppCompatActivity {
         try {
             // below method is used to set the
             // data source which will be our file name
+            Log.i("chkr", "playAudio: 2" + file_to_play+"<<<");
+        // file ni mil rahi
+
+
+
             mPlayer.setDataSource(file_to_play);
 
+            Log.i("chkr", "playAudio: " + file_to_play);
             // below method will prepare our media player
             mPlayer.prepare();
 
@@ -248,7 +283,7 @@ public class Recording extends AppCompatActivity {
             mPlayer.start();
             statusTV.setText("Recording Started Playing");
         } catch (IOException e) {
-            Log.e("TAG", "prepare() failed");
+            Log.e("chkr", "prepare() failed--"+e.toString());
         }
     }
 
@@ -279,5 +314,16 @@ public class Recording extends AppCompatActivity {
         playTV.setBackgroundColor(getResources().getColor(R.color.purple_200));
         stopplayTV.setBackgroundColor(getResources().getColor(R.color.gray));
         statusTV.setText("Recording Play Stopped");
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        file_to_play = audiohash.get( dataList.get(i));
+        Log.i("chkr", "onItemSelected:__ "+ file_to_play);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
