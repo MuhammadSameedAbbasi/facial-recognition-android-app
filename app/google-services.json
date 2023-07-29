@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "639281709086",
-    "project_id": "face-recognizer-humans",
-    "storage_bucket": "face-recognizer-humans.appspot.com"
+    "project_number": "259897088249",
+    "project_id": "face-recognizer-humans-39b55",
+    "storage_bucket": "face-recognizer-humans-39b55.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:639281709086:android:56c1d5c293c0a7900b2e0f",
+        "mobilesdk_app_id": "1:259897088249:android:140ac5c2f4131e16a6aa28",
         "android_client_info": {
           "package_name": "com.irhammuch.android.facerecognition"
         }
       },
       "oauth_client": [
         {
-          "client_id": "639281709086-0j2vekompso5r9tfjtn19dm8ed04q5nb.apps.googleusercontent.com",
+          "client_id": "259897088249-6qh8k2mpp6989ov555h8qfsncd8qu4jv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCAz1EF5bDEXJJruv3B4Jq30tewbP1pyEM"
+          "current_key": "AIzaSyDA2ePWVkCd_bviemSWHJJ-9F70xDXutTk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "639281709086-0j2vekompso5r9tfjtn19dm8ed04q5nb.apps.googleusercontent.com",
+              "client_id": "259897088249-6qh8k2mpp6989ov555h8qfsncd8qu4jv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

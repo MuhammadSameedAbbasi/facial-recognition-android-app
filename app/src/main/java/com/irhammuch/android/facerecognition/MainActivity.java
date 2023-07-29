@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void synccloud2(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans.appspot.com");
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans-39b55.appspot.com");
         StorageReference fileRef = storageRef.child("file.json");
 
     // Create a temporary file to store the downloaded JSON file
@@ -568,7 +568,7 @@ public class MainActivity extends AppCompatActivity {
         StorageReference storageRef;
 
         storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans.appspot.com");
+        storageRef = storage.getReferenceFromUrl("gs://face-recognizer-humans-39b55.appspot.com");
         Log.i(TAG, "meeting_logic: enter");
 
         String fileName = "user_availablity.json";
