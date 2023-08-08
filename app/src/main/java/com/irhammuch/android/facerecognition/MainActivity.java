@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
     private GraphicOverlay graphicOverlay;
-    private ImageView previewImg , gifimageview;
+    private ImageView previewImg , gifimageview , gifstillview;
     private TextView detectionTextView;
 
     private ArrayList<JSONObject> jsonlist;
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         gifimageview= findViewById(R.id.gifImageView);
+        gifstillview = findViewById(R.id.gifstillimageview);
 
         gifimageview.setVisibility(View.INVISIBLE);
         Glide.with(this).asGif().load(R.drawable.talking).into(gifimageview);

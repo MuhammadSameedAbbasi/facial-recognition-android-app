@@ -23,6 +23,18 @@
         app:layout_constraintBottom_toBottomOf="@id/previewView"/>
 
     <ImageView
+        android:id="@+id/gifstillimageview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="1dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/previewView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/previewView"
+        app:srcCompat="@drawable/nottalking" />
+
+    <ImageView
         android:id="@+id/gifImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -33,6 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/previewView" />
+
     <TextView
         android:id="@+id/detection_text"
         android:layout_width="0dp"
