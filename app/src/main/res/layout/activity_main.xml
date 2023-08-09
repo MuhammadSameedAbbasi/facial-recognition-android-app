@@ -9,18 +9,17 @@
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="3:4"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_width="410dp"
+        android:layout_height="486dp"
+        app:layout_constraintDimensionRatio="3:4" />
 
     <com.irhammuch.android.facerecognition.GraphicOverlay
         android:id="@+id/graphic_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="407dp"
+        android:layout_height="483dp"
+        app:layout_constraintBottom_toBottomOf="@id/previewView"
         app:layout_constraintDimensionRatio="3:4"
-        app:layout_constraintTop_toTopOf="@id/previewView"
-        app:layout_constraintBottom_toBottomOf="@id/previewView"/>
+        app:layout_constraintTop_toTopOf="@id/previewView" />
 
     <ImageView
         android:id="@+id/gifstillimageview"
@@ -73,17 +72,17 @@
 
         <ImageView
             android:id="@+id/preview_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:background="@drawable/roundedcorner"
+            android:contentDescription="@string/preview_photo"
+            android:scaleType="fitCenter"
             android:src="@drawable/outline_image_24"
-            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detection_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/add_btn"
             app:layout_constraintDimensionRatio="1:1"
-            android:contentDescription="@string/preview_photo" />
+            app:layout_constraintEnd_toStartOf="@id/add_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detection_text" />
     </androidx.cardview.widget.CardView>
 
 
@@ -102,15 +101,15 @@
 
     <ImageButton
         android:id="@+id/switch_camera"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:background="@drawable/roundedcorner"
+        android:contentDescription="@string/switch_camera"
         android:src="@drawable/outline_flip_camera_android_24"
-        app:layout_constraintStart_toEndOf="@id/add_btn"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detection_text"
-        android:contentDescription="@string/switch_camera" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/add_btn"
+        app:layout_constraintTop_toBottomOf="@id/detection_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
