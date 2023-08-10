@@ -9,64 +9,59 @@
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
-        android:layout_width="410dp"
-        android:layout_height="486dp"
-        android:layout_marginEnd="1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:scaleType="fillCenter" />
 
     <com.irhammuch.android.facerecognition.GraphicOverlay
         android:id="@+id/graphic_overlay"
-        android:layout_width="407dp"
-        android:layout_height="483dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/previewView"
-        app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/previewView" />
 
     <ImageView
         android:id="@+id/gifstillimageview"
-        android:layout_width="407dp"
-        android:layout_height="483dp"
-        android:layout_marginEnd="1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="not talking face"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/previewView"
-        app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/previewView"
-        app:srcCompat="@drawable/nottalking"
-        android:contentDescription="not talking face" />
+        app:srcCompat="@drawable/nottalking" />
 
     <ImageView
         android:id="@+id/gifImageView"
-        android:layout_width="407dp"
-        android:layout_height="483dp"
-        android:layout_marginEnd="1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="talking face"
         android:scaleType="fitXY"
         android:src="@drawable/talking"
         app:layout_constraintBottom_toBottomOf="@+id/previewView"
-        app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/previewView"
-        android:contentDescription="talking face" />
+        app:layout_constraintTop_toTopOf="@+id/previewView" />
 
     <TextView
         android:id="@+id/detection_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:textSize="18sp"
-        android:textColor="@color/white"
         android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/add_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/previewView"
-        app:layout_constraintBottom_toTopOf="@id/add_btn"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/previewView" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/preview_img_card"
