@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
 
-                            speakText("Welcome to Robo Receptionist");
+                            speakText("Welcome to Robo Receptionist",2500);
 
                             BufferedReader reader = new BufferedReader(new FileReader(localFile));
                             String line;
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
 
         graphicOverlay.draw(boundingBox, scaleX, scaleY, name);
     }
-    private void speakText(String text){
+    private void speakText(String text, int time){
         gifimageview.setVisibility(View.VISIBLE);
 
         // Hide the ImageView after 2 seconds
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 gifimageview.setVisibility(View.GONE);
             }
-        }, 2500); // Delay in milliseconds (2 seconds)
+        }, time); // Delay in milliseconds (2 seconds)
     }
 
     private void saveBitmapToGallery(Bitmap bitmap, String imgname) {
@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             });
-            speakText("hi , what is your name");
+            speakText("hi , what is your name",2500);
             builder.show();
 
         }
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                 person_name= input.getText().toString();
                 meeting_logic(graphicOverlay.name);
             });
-            speakText("hi " + graphicOverlay.name + ",  who do you want to meet");
+            speakText("hi " + graphicOverlay.name + ",  who do you want to meet",2500);
             builder.show();
 
         }
@@ -585,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "meeting_logic: "+jsonObject.optString(person_name));
                 if (jsonObject.optString(person_name).equalsIgnoreCase("unavailable")){
                     //record_message(customer);
-                    speakText(person_name+" is not available . Please leave a message.");
+                    speakText(person_name+" is not available . Please leave a message.", 2500);
 
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -600,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     // if person is available action
-                    speakText("You can meet "+ person_name +" Right now");
+                    speakText("You can meet "+ person_name +" Right now",2500);
                 }
 
 
