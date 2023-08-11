@@ -15,27 +15,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:scaleType="fillCenter" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.irhammuch.android.facerecognition.GraphicOverlay
         android:id="@+id/graphic_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/previewView"
+        app:layout_constraintDimensionRatio=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/previewView"
         app:layout_constraintTop_toTopOf="@id/previewView" />
 
     <ImageView
         android:id="@+id/gifstillimageview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="not talking face"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/previewView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/previewView"
+        app:layout_constraintStart_toStartOf="@+id/previewView"
         app:layout_constraintTop_toTopOf="@+id/previewView"
         app:srcCompat="@drawable/nottalking" />
 
@@ -43,12 +42,11 @@
         android:id="@+id/gifImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="talking face"
         android:scaleType="fitXY"
         android:src="@drawable/talking"
         app:layout_constraintBottom_toBottomOf="@+id/previewView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/previewView"
+        app:layout_constraintStart_toStartOf="@+id/previewView"
         app:layout_constraintTop_toTopOf="@+id/previewView" />
 
     <TextView
@@ -71,10 +69,10 @@
         app:cardBackgroundColor="#00000000"
         app:cardCornerRadius="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detection_text"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/add_btn"
-        app:layout_constraintDimensionRatio="1:1">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detection_text">
 
         <ImageView
             android:id="@+id/preview_img"
@@ -97,13 +95,13 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/white_roundedcorner"
+        android:contentDescription="@string/register_face"
         android:src="@drawable/outline_add_black_48"
-        app:layout_constraintStart_toEndOf="@id/preview_img_card"
-        app:layout_constraintEnd_toEndOf="@id/switch_camera"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/switch_camera"
+        app:layout_constraintStart_toEndOf="@id/preview_img_card"
         app:layout_constraintTop_toBottomOf="@id/detection_text"
-        app:tint="@color/teal_700"
-        android:contentDescription="@string/register_face" />
+        app:tint="@color/teal_700" />
 
     <ImageButton
         android:id="@+id/switch_camera"
